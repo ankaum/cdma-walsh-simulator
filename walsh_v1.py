@@ -26,12 +26,11 @@ msgs[0]= 2
 msgs[1]= 3
 msgs[2] = 4
 print(msgs)
-antipod_mat =  antipod
+antipod_mat =  np.delete(antipod, (0), axis = 0)
 def multiplex(nbr_users, antipod_mat, msgs):
     #result = [0] * 16
     print("multip antipod:")
     print(antipod_mat)
-    i = 0
     packet = antipod_mat
     for i in range (nbr_users ):
         packet[i] *= msgs[i]
@@ -41,15 +40,19 @@ def multiplex(nbr_users, antipod_mat, msgs):
 
 res = multiplex(3, antipod_mat, msgs)
 print(res)
+
+antipoddemux = walsh_mat(4)
+antipode = antipoddemux
+antipode[antipode == 1] = -1
+antipode[antipode == 0] = 1
+antipod_mate =  np.delete(antipode, (0), axis = 0)
 print("antipodlast")
-print(antipod)
-"""
-def demux(muxpack, antipod):
-    dmsgs = [0]*16
-    for i in range(16):
-        dmsgs[i] = (np.dot(muxpack, antipod[:][i])) / 16
+print(antipod_mate)
+def demux(muxpack, antipod_mate, nbrusers):
+    dmsgs = [0]*15
+    for i in range(nbrusers):
+        dmsgs[i] = (np.dot(muxpack, antipod_mate[i])) / 16
     return dmsgs
 
-demuxmsg= demux(res, antipod)
+demuxmsg= demux(res, antipod_mate, user_nbr)
 print(demuxmsg)
-"""
