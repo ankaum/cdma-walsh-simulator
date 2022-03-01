@@ -1,4 +1,3 @@
 # cdma-walsh
 Dependencies:
-numpy
-csv
+numpy, csv
