@@ -1,7 +1,8 @@
 import numpy as np
-import csv
 import time
 import copy
+import pandas as pd
+import array
 
 def walsh_mat(ordre):
     walsh = np.array([0.0])
@@ -23,13 +24,12 @@ def multiplexeur(nbr_users, mat_antipodale, msgs):
     for i in range (nbr_users ):
         packet[i] *= msgs[i]
     result = np.sum(packet, axis=0)
-    print(packet)
     return result
 
 def demultiplexeur(nbr_users, mat_antipodale, packet_mux,):
     dmsgs = [0.0] * nbr_users
-    for i in range(nbr_users):
-        dmsgs[i] = (np.dot(packet_mux, mat_antipodale[i])) / nbr_users
+    for j in range(nbr_users):
+        dmsgs[j] = ((np.dot(packet_mux, mat_antipodale[j])) / nbr_users)
     return dmsgs
 
 def orderdetector(nbr_users):
@@ -43,6 +43,52 @@ def orderdetector(nbr_users):
 
 #I will define the data reader method here
 
+df = pd.read_csv("dataToTransmit.csv")
+print(df)
+data = df.to_numpy()
+data = np.transpose(data)
+print(len(data))
+print("The data to transfer is listed below.")
+print("Every row represents a timeframe")
+print(data)
+time.sleep(1.69)
+nbr_users = len(data[0])
+print("The number of users to commute is ", len(data[0]))
+time.sleep(0.69)
+ordreWalsh = orderdetector(nbr_users)
+print("Walsh matrix defined order:", ordreWalsh)
+time.sleep(0.69)
+print("Generating the Walsh matrix...")
+walshMatrix = walsh_mat(ordreWalsh)
+time.sleep(1.69)
+print("WalshMAT:")
+print(walshMatrix)
+print("Testing if the antipodeur function is working...")
+antipodeMat = antipodeur(walshMatrix)
+time.sleep(1.69)
+print("AntipodWalsh:")
+print(antipodeMat)
+
+time.sleep(1.69)
+spreadedSignal = [nbr_users]
+receivedData = [len(data)]
+print(len(data))
+for i in range(len(data)):
+    print(i)
+    spreadedSignal.append(multiplexeur(nbr_users, antipodeMat, data[i]))
+    receivedData.append(demultiplexeur(nbr_users, antipodeMat, spreadedSignal[i]))
+print("Received data:")
+print(np.array(receivedData[0]))
+"""
+print(np.array(receivedData[1]))
+print(np.array(receivedData[2]))
+print(np.array(receivedData[3]))
+print(np.array(receivedData[4]))
+print(np.array(receivedData[5]))
+print(np.array(receivedData[6]))
+"""
+
+'''
 print("Plz specify the nbr of users to link:")
 nbr_users = int(input())
 ordreWalsh = orderdetector(nbr_users)
@@ -79,3 +125,4 @@ time.sleep(1.69)
 print(orginal_msgs)
 print("Original msgs:")
 print(msg)
+'''
