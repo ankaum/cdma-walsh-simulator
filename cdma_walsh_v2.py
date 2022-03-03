@@ -41,13 +41,14 @@ def orderdetector(nbr_users):
         else:
             ordre +=1
 
-#I will define the data reader method here
+#AutoTransmitting via csv packets
 
 df = pd.read_csv("dataToTransmit.csv")
+print("The dataframe to transmit, each line represents a user:")
 print(df)
 data = df.to_numpy()
 data = np.transpose(data)
-print(len(data))
+time.sleep(1.69)
 print("The data to transfer is listed below.")
 print("Every row represents a timeframe")
 print(data)
@@ -70,15 +71,27 @@ print("AntipodWalsh:")
 print(antipodeMat)
 
 time.sleep(1.69)
-spreadedSignal = [nbr_users]
-receivedData = [len(data)]
+spreadedSignal = []
+receivedData = []
 print(len(data))
+#print(data)
 for i in range(len(data)):
     print(i)
     spreadedSignal.append(multiplexeur(nbr_users, antipodeMat, data[i]))
     receivedData.append(demultiplexeur(nbr_users, antipodeMat, spreadedSignal[i]))
+receivedData = np.array(receivedData)
 print("Received data:")
-print(np.array(receivedData[0]))
+print(receivedData)
+receivedData = np.transpose(receivedData)
+time.sleep(1.69)
+receivedDf = pd.DataFrame(receivedData, columns = df.columns)
+receivedDf = receivedDf.round(decimals = 2)
+print("DF to export:")
+print(receivedDf)
+time.sleep(1.69)
+receivedDf.to_csv("receivedData.csv", index = False)
+print("The received dataframe has been exported to \"receivedData.csv\"")
+
 """
 print(np.array(receivedData[1]))
 print(np.array(receivedData[2]))
